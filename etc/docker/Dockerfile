@@ -2,6 +2,7 @@ FROM adoptopenjdk/openjdk11-openj9:x86_64-debianslim-jre-11.0.7_10_openj9-0.20.0
 
 RUN mkdir -p /usr/app
 WORKDIR /usr/app
+ENV JHIPSTER_SLEEP=0
 
 COPY entrypoint.sh /usr/app/entrypoint.sh
 COPY simple-shop-1.0.0.jar /usr/app/simple-shop.jar
