@@ -1,0 +1,11 @@
+version: '2'
+services:
+  simple_shop-postgresql:
+    image: postgres:12.1
+    # volumes:
+    #     - ~/volumes/jhipster/simple_shop/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=simple_shop
+      - POSTGRES_PASSWORD=
+    ports:
+      - 5432:5432

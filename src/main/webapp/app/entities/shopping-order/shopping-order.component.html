@@ -1,0 +1,79 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="simpleShopApp.shoppingOrder.home.title">Shopping Orders</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-shopping-order" [routerLink]="['/shopping-order/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span  jhiTranslate="simpleShopApp.shoppingOrder.home.createLabel">
+            Create a new Shopping Order
+            </span>
+        </button>
+    </h2>
+
+    <bpf-alert-error></bpf-alert-error>
+
+    <bpf-alert></bpf-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="shoppingOrders?.length === 0">
+        <span jhiTranslate="simpleShopApp.shoppingOrder.home.notFound">No shoppingOrders found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="shoppingOrders?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="name"><span jhiTranslate="simpleShopApp.shoppingOrder.name">Name</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="totalAmount"><span jhiTranslate="simpleShopApp.shoppingOrder.totalAmount">Total Amount</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="ordered"><span jhiTranslate="simpleShopApp.shoppingOrder.ordered">Ordered</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="buyerLogin"><span jhiTranslate="simpleShopApp.shoppingOrder.buyer">Buyer</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let shoppingOrder of shoppingOrders ;trackBy: trackId">
+                    <td><a [routerLink]="['/shopping-order', shoppingOrder.id, 'view']">{{ shoppingOrder.id }}</a></td>
+                    <td>{{ shoppingOrder.name }}</td>
+                    <td>{{ shoppingOrder.totalAmount }}</td>
+                    <td>{{ shoppingOrder.ordered | date:'medium' }}</td>
+                    <td>
+                        {{ shoppingOrder.buyerLogin }}
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/shopping-order', shoppingOrder.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/shopping-order', shoppingOrder.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(shoppingOrder)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="shoppingOrders?.length > 0">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+{
+    "name": "Shipment",
+    "fields": [
+        {
+            "fieldName": "shippedAt",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "shoppingOrder",
+            "otherEntityRelationshipName": "shipment",
+            "relationshipValidateRules": "required",
+            "relationshipName": "order",
+            "otherEntityField": "name",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "user",
+            "otherEntityRelationshipName": "shipment",
+            "relationshipValidateRules": "required",
+            "relationshipName": "shippedBy",
+            "otherEntityField": "login"
+        }
+    ],
+    "changelogDate": "20200514133700",
+    "entityTableName": "shipment",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
+    "clientRootFolder": "",
+    "applications": [
+        "simple_shop"
+    ]
+}

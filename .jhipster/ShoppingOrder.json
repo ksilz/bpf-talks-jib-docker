@@ -1,0 +1,67 @@
+{
+    "name": "ShoppingOrder",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "unique",
+                "minlength",
+                "maxlength"
+            ],
+            "fieldValidateRulesMinlength": "2",
+            "fieldValidateRulesMaxlength": "90"
+        },
+        {
+            "fieldName": "totalAmount",
+            "fieldType": "Float",
+            "fieldValidateRules": [
+                "min"
+            ],
+            "fieldValidateRulesMin": "0"
+        },
+        {
+            "fieldName": "ordered",
+            "fieldType": "ZonedDateTime"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "productOrder",
+            "otherEntityRelationshipName": "overallOrder",
+            "relationshipValidateRules": "required",
+            "relationshipName": "orders"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "user",
+            "otherEntityRelationshipName": "shoppingOrder",
+            "relationshipValidateRules": "required",
+            "relationshipName": "buyer",
+            "otherEntityField": "login"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "shipment",
+            "otherEntityRelationshipName": "order",
+            "relationshipValidateRules": "required",
+            "relationshipName": "shipment",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20200514133500",
+    "entityTableName": "shopping_order",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
+    "clientRootFolder": "",
+    "applications": [
+        "simple_shop"
+    ]
+}
