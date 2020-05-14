@@ -26,7 +26,7 @@ echo " "
 ./gradlew clean bootJar -Pprod
 cp ./etc/docker/* build/libs/
 cd ./build/libs
-docker build -t joedata/bpf-talks-jib-docker:dockerfile-v1 .
+docker build -t joedata/bpf-talks-jib-docker:dockerfile-v2 .
 cd ../..
 
 echo " "
@@ -35,7 +35,7 @@ echo "***************************************************************"
 echo " "
 echo "Here are the layers of the Docker Image I just built:"
 
-docker history -H joedata/bpf-talks-jib-docker:dockerfile-v1
+docker history -H joedata/bpf-talks-jib-docker:dockerfile-v2
 
 echo " "
 echo " "

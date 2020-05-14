@@ -31,7 +31,7 @@ echo "***************************************************************"
 echo " "
 echo "Here are the layers of the Docker Image I just built:"
 
-docker history -H joedata/bpf-talks-jib-docker:jib-v1
+docker history -H joedata/bpf-talks-jib-docker:jib-v2
 
 echo " "
 echo " "
