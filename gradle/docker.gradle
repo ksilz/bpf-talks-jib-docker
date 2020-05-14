@@ -1,22 +1,22 @@
 jib {
     from {
-        image = "adoptopenjdk:11-jre-hotspot"
+        image = "registry.hub.docker.com/adoptopenjdk/openjdk11-openj9:x86_64-debianslim-jre-11.0.7_10_openj9-0.20.0"
     }
     to {
-        image = "simple_shop:latest"
+        image = "joedata/bpf-talks-jib-docker:jib"
     }
     container {
         entrypoint = ["bash", "-c", "/entrypoint.sh"]
         ports = ["8080"]
         environment = [
-            SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS",
-            JHIPSTER_SLEEP: "0"
+                SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS",
+                JHIPSTER_SLEEP            : "0"
         ]
         creationTime = "USE_CURRENT_TIMESTAMP"
     }
     extraDirectories {
-      paths = file("src/main/jib")
-      permissions = ["/entrypoint.sh": "755"]
+        paths = file("src/main/jib")
+        permissions = ["/entrypoint.sh": "755"]
     }
 }
 
