@@ -58,6 +58,7 @@ public class SimpleShopApp {
      * @param args the command line arguments.
      */
     public static void main(String[] args) {
+        log.info("About to start application...");
         SpringApplication app = new SpringApplication(SimpleShopApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
