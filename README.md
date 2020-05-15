@@ -2,33 +2,28 @@
 
 ## What Is This?
 
-[Google Jib](https://github.com/GoogleContainerTools/jib) is a Docker image build tool by Google. It produces **smaller** Docker images for your Java applications. You usually push **90%+ less data** to your Docker repository!
+[Google Jib](https://github.com/GoogleContainerTools/jib) is a Docker image build tool by Google. It produces **smaller** Docker images for your Java applications: You usually push **90%+ less data** to your Docker repository. So Jib **saves a ton of time & network bandwidth**!
 
 I demonstrated this in a lightning talk to the [London Java Community](https://www.meetup.com/Londonjavacommunity/) (LJC) on May 15, 2020. Please **read the slides first!**
 
-- If you're on an Apple device, you should read the animated Keynote slides.
-- Everybody else should **[should read^ the PDF slides](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.pdf)**-
+- If you're on an Apple device and have Apple's Keynote presentation program installed, then you [should read the animated Keynote slides](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.key).
+- Everybody else should **[should read the PDF slides](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.pdf)**.
 
 ## Why Should I Believe You?
 
 You **shouldn't** believe everything you read on the Internet. Granted, I'm a full-stack developer with [21 years of Java experience](https://ksilz.com). And I think of myself as trustworthy. But don't we all?!
 
-That's why you can run OpenJ9 against HotSpot yourselves. And you can tweak them &mdash; change the Java options or build a whole new container image!
+That's why you can compare the Docker images with botha Dockerfile and Google Jib yourself with the instructions here. And you can build the Docker Images yourself, seeing the effect of your changes! All you need is in this repo!
 
 And now for some shameless self-promotion. I write a blog about how to get [better Java projects faster with JHipster and Docker](https://betterprojectsfaster.com). It's been dormant [since the end of 2019](https://betterprojectsfaster.com/blog/), but I'll pick it up again by June 2020. Spoiler alert: I'll also write about [Flutter](https://flutter.dev), Google's cross-platform UI toolkit for native mobile, web & desktop apps. I built [a mobile prototype with it](https://www.youtube.com/watch?v=dxqA6RhEwdQ&t=1s) last year.
 
-## What Do I Need to Test OpenJ9 and Hotspot Myself?
+## What Do I Need to Compare these Docker Images?
 
-You need Docker & Docker Compose. I used two different applications to test OpenJ9 vs HotSpot:
+First, you need [Docker](https://www.docker.com/get-started). Docker is available on Windows, Mac & Linux.
 
-- A [Spring Boot](https://spring.io/projects/spring-boot) web application with a [PostgreSQL database](https://www.postgresql.org), generated with [JHipster](https://www.jhipster.tech)
-- 7 benchmarks from the open-source [Rennaissance Suite](https://renaissance.dev)
+Then you also need [container-diff](https://github.com/GoogleContainerTools/container-diff) , another open-source Docker tool from Google.
 
-Both applications use the most recent Java 8 and 11 versions from [AdoptOpenJDK](https://adoptopenjdk.net), as of April 2020.
-
-The containers are limited to 2 GB RAM and 2 CPUs. So I recommend at least 8 GB of RAM and 4 CPU cores to run these applications on your test machine.
-
-## How Do I Run OpenJ9 and HotSpot Myself?
+## How Do I Compare the Docker Images?
 
 Each application has four different Docker Compose Files in the root directory of this repository:
 
