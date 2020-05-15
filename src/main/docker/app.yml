@@ -1,7 +1,7 @@
 version: '2'
 services:
   simple_shop-app:
-    image: simple_shop
+    image: joedata/bpf-talks-jib-docker:jib-v2
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=prod,swagger
