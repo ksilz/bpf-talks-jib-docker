@@ -245,12 +245,12 @@ All of the changed files were either in `/app/resources` or `/app/classes`. Henc
 
 ## What Do I Need to Build these Docker Images?
 
-\__coming soon_
+_Please check back on Monday, May 18, 2020, for this section._
 
-## How Do I Build the Docker Iamges?
+## How Do I Build the Docker Images?
 
-\__coming soon_
+_Please check back on Monday, May 18, 2020, for this section._
 
-## How Can I Use Google Jib in my Own Project?
+## How Can I Use Google Jib in My Own Project?
 
-\__coming soon_
+_Please check back on Monday, May 18, 2020, for this section._
