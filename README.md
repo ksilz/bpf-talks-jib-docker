@@ -1,189 +1,165 @@
-# simple_shop
+# Google Jib: Smaller & Faster Docker Images for Java Applications
 
-This application was generated using JHipster 6.8.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v6.8.0](https://www.jhipster.tech/documentation-archive/v6.8.0).
+## What Is This?
 
-## Development
+[Google Jib](https://github.com/GoogleContainerTools/jib) is a Docker image build tool by Google. It produces **smaller** Docker images for your Java applications. You usually push **90%+ less data** to your Docker repository!
 
-Before you can build this project, you must install and configure the following dependencies on your machine:
+I demonstrated this in a lightning talk to the [London Java Community](https://www.meetup.com/Londonjavacommunity/) (LJC) on May 15, 2020. Please **read the slides first!**
 
-1. [Node.js][]: We use Node to run a development web server and build the project.
-   Depending on your system, you can install Node either from source or as a pre-packaged bundle.
+- If you're on an Apple device, you should read the animated Keynote slides.
+- Everybody else should **[should read^ the PDF slides](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.pdf)**-
 
-After installing Node, you should be able to run the following command to install development tools.
-You will only need to run this command when dependencies change in [package.json](package.json).
+## Why Should I Believe You?
 
-    npm install
+You **shouldn't** believe everything you read on the Internet. Granted, I'm a full-stack developer with [21 years of Java experience](https://ksilz.com). And I think of myself as trustworthy. But don't we all?!
 
-We use npm scripts and [Webpack][] as our build system.
+That's why you can run OpenJ9 against HotSpot yourselves. And you can tweak them &mdash; change the Java options or build a whole new container image!
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
+And now for some shameless self-promotion. I write a blog about how to get [better Java projects faster with JHipster and Docker](https://betterprojectsfaster.com). It's been dormant [since the end of 2019](https://betterprojectsfaster.com/blog/), but I'll pick it up again by June 2020. Spoiler alert: I'll also write about [Flutter](https://flutter.dev), Google's cross-platform UI toolkit for native mobile, web & desktop apps. I built [a mobile prototype with it](https://www.youtube.com/watch?v=dxqA6RhEwdQ&t=1s) last year.
 
-    ./gradlew -x webpack
-    npm start
+## What Do I Need to Test OpenJ9 and Hotspot Myself?
 
-Npm is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
-specifying a newer version in [package.json](package.json). You can also run `npm update` and `npm install` to manage dependencies.
-Add the `help` flag on any command to see how you can use it. For example, `npm help update`.
+You need Docker & Docker Compose. I used two different applications to test OpenJ9 vs HotSpot:
 
-The `npm run` command will list all of the scripts available to run for this project.
+- A [Spring Boot](https://spring.io/projects/spring-boot) web application with a [PostgreSQL database](https://www.postgresql.org), generated with [JHipster](https://www.jhipster.tech)
+- 7 benchmarks from the open-source [Rennaissance Suite](https://renaissance.dev)
 
-### PWA Support
+Both applications use the most recent Java 8 and 11 versions from [AdoptOpenJDK](https://adoptopenjdk.net), as of April 2020.
 
-JHipster ships with PWA (Progressive Web App) support, and it's turned off by default. One of the main components of a PWA is a service worker.
+The containers are limited to 2 GB RAM and 2 CPUs. So I recommend at least 8 GB of RAM and 4 CPU cores to run these applications on your test machine.
 
-The service worker initialization code is commented out by default. To enable it, uncomment the following code in `src/main/webapp/index.html`:
+## How Do I Run OpenJ9 and HotSpot Myself?
 
-```html
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js').then(function() {
-      console.log('Service Worker Registered');
-    });
-  }
-</script>
-```
+Each application has four different Docker Compose Files in the root directory of this repository:
 
-Note: [Workbox](https://developers.google.com/web/tools/workbox/) powers JHipster's service worker. It dynamically generates the `service-worker.js` file.
+| JVM Type | JVM Version | Web application                                                                                                                               | Benchmarks                                                                                                                                        |
+| -------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HotSpot  | 8           | [`docker-compose-web-app-hotspot-8.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-web-app-hotspot-8.yml)   | [`docker-compose-benchmark-hotspot-8.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-benchmark-hotspot-8.yml)   |
+| HotSpot  | 11          | [`docker-compose-web-app-hotspot-11.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-web-app-hotspot-11.yml) | [`docker-compose-benchmark-hotspot-11.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-benchmark-hotspot-11.yml) |
+| OpenJ9   | 8           | [`docker-compose-web-app-openj9-8.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-web-app-openj9-8.yml)     | [`docker-compose-benchmark-openj9-8.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-benchmark-openj9-8.yml)     |
+| OpenJ9   | 11          | [`docker-compose-web-app-openj9-11.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-web-app-openj9-11.yml)   | [`docker-compose-benchmark-openj9-11.yml`](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-benchmark-openj9-11.yml)   |
 
-### Managing dependencies
-
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
-
-    npm install --save --save-exact leaflet
-
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
-
-    npm install --save-dev --save-exact @types/leaflet
-
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-Edit [src/main/webapp/app/vendor.ts](src/main/webapp/app/vendor.ts) file:
+So here's how you run the web application with HotSpot 11:
 
 ```
-import 'leaflet/dist/leaflet.js';
+docker-compose -f docker-compose-web-app-hotspot-11.yml up
 ```
 
-Edit [src/main/webapp/content/scss/vendor.scss](src/main/webapp/content/scss/vendor.scss) file:
+And this is how you run the benchmarks with OpenJ9 8:
 
 ```
-@import '~leaflet/dist/leaflet.css';
+docker-compose -f docker-compose-benchmark-openj9-8.yml up
 ```
 
-Note: There are still a few other things remaining to do for Leaflet that we won't detail here.
-
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
-### Using Angular CLI
-
-You can also use [Angular CLI][] to generate some custom client code.
-
-For example, the following command:
-
-    ng generate component my-component
-
-will generate few files:
-
-    create src/main/webapp/app/my-component/my-component.component.html
-    create src/main/webapp/app/my-component/my-component.component.ts
-    update src/main/webapp/app/app.module.ts
-
-## Building for production
-
-### Packaging as jar
-
-To build the final jar and optimize the simple_shop application for production, run:
-
-    ./gradlew -Pprod clean bootJar
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
-To ensure everything worked, run:
-
-    java -jar build/libs/*.jar
-
-Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
-
-Refer to [Using JHipster in production][] for more details.
-
-### Packaging as war
-
-To package your application as a war in order to deploy it to an application server, run:
-
-    ./gradlew -Pprod -Pwar clean bootWar
-
-## Testing
-
-To launch your application's tests, run:
-
-    ./gradlew test integrationTest jacocoTestReport
-
-### Client tests
-
-Unit tests are run by [Jest][] and written with [Jasmine][]. They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
-
-    npm test
-
-For more information, refer to the [Running tests page][].
-
-### Code quality
-
-Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
+When the benchmarks are done, the container stops. That's why I used the `time` command on the Mac to measure how much CPU time they took:
 
 ```
-docker-compose -f src/main/docker/sonar.yml up -d
+time docker-compose -f docker-compose-benchmark-openj9-8.yml up
+
+[...]
+
+benchmark-openj9-8 exited with code 0
+docker-compose -f docker-compose-benchmark-openj9-8.yml up  0.73s user 0.12s system 0% cpu 7:50.92 total
 ```
 
-You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or by using the gradle plugin.
-
-Then, run a Sonar analysis:
+The web application runs until you manually stop the container. So I only took the time that Spring Boot self-reports in the log:
 
 ```
-./gradlew -Pprod clean check jacocoTestReport sonarqube
+Started SimpleShopApp in 18.302 seconds (JVM running for 19.362)
 ```
 
-For more information, refer to the [Code quality page][].
+I used the second number in my slides: `JVM running for 19.362`
 
-## Using Docker to simplify development (optional)
+For both applications, I monitored CPU & memory utilization with `docker stats`:
 
-You can use Docker to improve your JHipster development experience. A number of docker-compose configuration are available in the [src/main/docker](src/main/docker) folder to launch required third party services.
+```
+docker stats --format "{{.Name}}\t{{.MemUsage}}\t{{.CPUPerc}}"
+```
 
-For example, to start a postgresql database in a docker container, run:
+This command produces tab-separated output. You can redirect that to a file and then import into a spreadsheet. I did: The benchmark data is in [this folder](https://github.com/ksilz/bpf-talks-openj9-memory/tree/master/results/benchmark) as `data-benchmark-*.txt`. The log output of the benchmark runs is in the same folder as `output-benchmark-*.txt`
 
-    docker-compose -f src/main/docker/postgresql.yml up -d
+## How Do I Tweak OpenJ9 and HotSpot?
 
-To stop it and remove the container, run:
+You can tweak both the Java options and the CPUs and memory of the container right in the Docker Compose files. For example, here's [the Docker Compose file for running the benchmark in OpenJ9](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/docker-compose-benchmark-openj9-8.yml):
 
-    docker-compose -f src/main/docker/postgresql.yml down
+```
+version: '2.2'
 
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
+services:
+  benchmark-openj9-8:
+    image: 'joedata/bpf-talks-openj9-memory-benchmark:openj9-8'
+    container_name: benchmark-openj9-8
+    environment:
+      - >-
+        JAVA_OPTS=-Xmx1024m -Xms256m -Xtune:virtualized
+      - BENCHMARKS=-r 5 gauss-mix,movie-lens,akka-uct,fj-kmeans,mnemonics,scala-doku,finagle-chirper
+    cpus: 2.0
+    mem_limit: 2147483648
+```
 
-    ./gradlew bootJar -Pprod jibDockerBuild
+You can change the Java options in the `JAVA_OPTS` line. Which Java options can you use?
 
-Then run:
+- For OpenJ9, check [this link for switching from HotSpot](https://www.eclipse.org/openj9/docs/cmdline_migration/). And [this page](https://www.eclipse.org/openj9/docs/cmdline_specifying/) provides links to more information on system properties and command-line options in OpenJ9.
+- For HotSpot, Java 8 command-line options [are listed here](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html). The Java 11 command-line options [are here](https://docs.oracle.com/en/java/javase/11/tools/java.html).
 
-    docker-compose -f src/main/docker/app.yml up -d
+The number of CPUs is in the `cpus:` line, and the memory in the `mem_limit` one (in Bytes).
 
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
+For the benchmark only, you can tweak the `BENCHMARKS` line. The number of repetitions is 5 here (`-r 5`). The comma-separated list of benchmarks follows right afterwards. The complete list of benchmarks is on [the Rennaissance Suite web site](https://renaissance.dev/docs). Please note that some of them actually crashed in my environment.
 
-## Continuous Integration (optional)
+## How Can I Change the Java Version?
 
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
+You can't through the Docker Compose files. I build all the Docker images myself, so the Java version is hard-coded in there. If you want a different version of Java, you need to build the Docker images yourself.
 
-[jhipster homepage and latest documentation]: https://www.jhipster.tech
-[jhipster 6.8.0 archive]: https://www.jhipster.tech/documentation-archive/v6.8.0
-[using jhipster in development]: https://www.jhipster.tech/documentation-archive/v6.8.0/development/
-[using docker and docker-compose]: https://www.jhipster.tech/documentation-archive/v6.8.0/docker-compose
-[using jhipster in production]: https://www.jhipster.tech/documentation-archive/v6.8.0/production/
-[running tests page]: https://www.jhipster.tech/documentation-archive/v6.8.0/running-tests/
-[code quality page]: https://www.jhipster.tech/documentation-archive/v6.8.0/code-quality/
-[setting up continuous integration]: https://www.jhipster.tech/documentation-archive/v6.8.0/setting-up-ci/
-[node.js]: https://nodejs.org/
-[yarn]: https://yarnpkg.org/
-[webpack]: https://webpack.github.io/
-[angular cli]: https://cli.angular.io/
-[browsersync]: https://www.browsersync.io/
-[jest]: https://facebook.github.io/jest/
-[jasmine]: https://jasmine.github.io/2.0/introduction.html
-[protractor]: https://angular.github.io/protractor/
-[leaflet]: https://leafletjs.com/
-[definitelytyped]: https://definitelytyped.org/
+I used the "Debian Slim JRE" images from AdoptOpenJDK as my base images. Here are their Docker Hub repositories:
+
+- [HotSpot 8](https://hub.docker.com/r/adoptopenjdk/openjdk8)
+- [HotSpot 11](https://hub.docker.com/r/adoptopenjdk/openjdk11)
+- [OpenJ9 8](https://hub.docker.com/r/adoptopenjdk/openjdk8-openj9)
+- [OpenJ9 11](https://hub.docker.com/r/adoptopenjdk/openjdk11-openj9)
+
+You can find my Docker Images on Docker Hub, too:
+
+- [Benchmark](https://hub.docker.com/repository/docker/joedata/bpf-talks-openj9-memory-benchmark)
+- [Web Application](https://hub.docker.com/repository/docker/joedata/bpf-talks-openj9-memory-web-app)
+
+### How Do I Build the Benchmark Docker Image?
+
+- Change into the [`src/benchmark`](https://github.com/ksilz/bpf-talks-openj9-memory/tree/master/src/benchmark) folder.
+- This folder has 4 Dockerfile: HotSpot and OpenJ9, Java 8 and Java 11. I'm sure you can tell them apart by their names! 😉
+- Download version 0.10.0 of the Renaissance Suite JAR file [from the web site](v0.10.0) and save it in this folder. It's huge: 415 MB.
+- There's [an MD5 checksum](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/src/benchmark/renaissance-mit-0.10.0.jar.md5) in the folder so you can test if the JAR file is ok:
+
+```
+md5sum --check renaissance-mit-0.10.0.jar.md5
+```
+
+- Edit the first line of the Dockerfile you want to change to the new Java Docker image. Here's that line for OpenJ9 8:
+
+```
+FROM adoptopenjdk/openjdk8-openj9:x86_64-debianslim-jre8u252-b09_openj9-0.20.0
+```
+
+- Now build the Docker image by running a `docker build` in this directory. Here's how you build the OpenJ9 8 image. Please note that I didn't specify a Docker repository here (before the image name):
+
+```
+docker build -t my-memory-benchmark:openj9-8-new -f Dockerfile-openj9-8 .
+```
+
+- As the last step, update the Docker Compose file to use your new image. That's the `image:` line in there. For the sample image that you just built in the line above, your Docker Compose file would have this `image:` line:
+
+```
+    image: 'my-memory-benchmark:openj9-8-new'
+```
+
+### How Do I Build the Web Application Docker Image?
+
+- Change into the [`src/web-app`](https://github.com/ksilz/bpf-talks-openj9-memory/tree/master/src/web-app) folder.
+- This folder also has 4 Dockerfile: HotSpot and OpenJ9, Java 8 and Java 11.
+- Download [the web application JAR file](https://bpfr.blob.core.windows.net/talks/openj9-memory-ljc-2020/simple-shop-1.0.0.jar) and save it in this folder. It's 61 MB.
+- There's also [an MD5 checksum](https://github.com/ksilz/bpf-talks-openj9-memory/blob/master/src/web-app/simple-shop-1.0.0.jar.md5) in the folder:
+
+```
+md5sum --check simple-shop-1.0.0.jar.md5
+```
+
+- Now you can edit the Dockerfile, build it and use it in you Docker Compose files the same way as described in the previous section.
