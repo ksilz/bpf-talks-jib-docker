@@ -28,7 +28,7 @@ Then you also need [`container-diff`](https://github.com/GoogleContainerTools/co
 The Docker images are for the application in this repository. It's a [Spring Boot](https://spring.io/projects/spring-boot) web application with a [PostgreSQL database](https://www.postgresql.org), generated with [JHipster](https://www.jhipster.tech).
 
 - You **don't** need to run the application just to compare the Docker image. But if you do, then please change into the `src/main/docker` directory and run `docker-compose -f app.yml up` there. This will start both the Spring Boot application on port 8080 and a PostgreSQL database. You can log in either as "admin/admin" or "user/user".
-- If you just want to see what the application **looks** like, then please look at [my second JHipster tutorial](https://betterprojectsfaster.com/learn/tutorial-jhipster-docker-02#running-the-application) . It shows you all screens, especially the built-in admin pages.
+- If you just want to see what the application **looks** like, then please look at [my second JHipster tutorial](https://betterprojectsfaster.com/learn/tutorial-jhipster-docker-02#running-the-application). It shows you all screens, especially the built-in admin pages.
 
 I created a [repository for the Docker images of this talk](https://hub.docker.com/r/joedata/bpf-talks-jib-docker). You'll use its Docker images.
 
@@ -77,8 +77,8 @@ As my slides explain, the Docker image consists of layers:
 - The lower layers are at the bottom, the upper layers at the top
 - The bottom layers all the way to the line that starts with `092f9ad82a56` belong to the base Docker image I'm using: `adoptopenjdk/openjdk11-openj9:x86_64-debianslim-jre-11.0.7_10_openj9-0.20.0`
 - The first layer from my Dockerfile is the line that starts with `2d3975c3229c` &mdash; it's the `RUN mkdir -p /usr/app` command. You can see `mkdir -p /usr/app` on the right
-- Every line in my Dockerfile created a layer.
-- Each layer prints its size on the right. The biggest layer from my Dockerfile is the JAR file (second layer from top) at 61.4MB &mdash; no surprise here.
+- Every line in my Dockerfile created a layer
+- Each layer prints its size on the right. The biggest layer from my Dockerfile is the JAR file (second layer from top) at 61.4MB &mdash; no surprise here
 
 As you may be able to tell from the Docker image label `dockerfile-v2`, this image is actually the second version of the application. Compared to the first version of the application, I just [added one log statement to the main class](https://github.com/ksilz/bpf-talks-jib-docker/commit/9c11f5c2d1ca5b1c70fda9b465105f980331bfb6). So how did this one change impact the layers of my Docker image?
 
@@ -100,7 +100,9 @@ FILE                            SIZE1        SIZE2
 %
 ```
 
-The last line tells us that the entire JAR file changed. The file size difference (58.5MB here vs 61.4MB from `docker log`) probably stems from defining 1MB differently: Once as 1000x1000 Bytes, and once as 1024x1024 Bytes.
+No files were added or deleted. But the last line tells us that the entire JAR file **changed**. So pushing the updated image to a Docker repository means pushing the layer with the entire JAR file!
+
+The file size difference (58.5MB here vs 61.4MB from `docker log`) probably stems from defining 1MB differently: Once as 1000x1000 Bytes, and once as 1024x1024 Bytes.
 
 ### Google Jib Images
 
@@ -166,9 +168,80 @@ I removed the `CREATED` column from the output and condensed it so that all fits
 - We have the same layers from the base image. The last base image layer is the last line that has `/bin/sh` in the `CREATED BY` column.
 - Jib adds the top four layers. They all have `jib-gradle-plugin:2.2.0` in the `CREATED BY` column.
   - The dependency JAR files are in the first layer. It has `dependencies` as a `COMMENT`.
-  - The Angular web application, configuration & data files re in the second layer. It has `resources` as a `COMMENT`.
+  - The Angular web application, configuration & data files are in the second layer. It has `resources` as a `COMMENT`.
   - The java classes of the application are in the third layer. It has `classes` as a `COMMENT`.
   - The final layer contains the extra files from the [`src/main/jib` directory](https://github.com/ksilz/bpf-talks-jib-docker/tree/master/src/main/jib). That's just `entrypoint.sh` in our case. It has `extra files` as a `COMMENT`.
+
+So now let's how the very same [one line change in the main class](https://github.com/ksilz/bpf-talks-jib-docker/commit/9c11f5c2d1ca5b1c70fda9b465105f980331bfb6) affected the layers of our Jib image:
+
+```
+% container-diff diff joedata/bpf-talks-jib-docker:jib-v1 joedata/bpf-talks-jib-docker:jib-v2 --type=file
+
+-----File-----
+
+These entries have been added to joedata/bpf-talks-jib-docker:jib-v1:
+FILE                                                                               SIZE
+/app/resources/static/app/0.89604fbecf66a9247c0f.chunk.js                          27.7K
+/app/resources/static/app/1.89604fbecf66a9247c0f.chunk.js                          24.9K
+/app/resources/static/app/10.89604fbecf66a9247c0f.chunk.js                         803B
+/app/resources/static/app/11.89604fbecf66a9247c0f.chunk.js                         6.2K
+/app/resources/static/app/12.89604fbecf66a9247c0f.chunk.js                         4.7K
+/app/resources/static/app/13.89604fbecf66a9247c0f.chunk.js                         5.1K
+/app/resources/static/app/2.89604fbecf66a9247c0f.chunk.js                          25K
+/app/resources/static/app/3.89604fbecf66a9247c0f.chunk.js                          28.2K
+/app/resources/static/app/4.89604fbecf66a9247c0f.chunk.js                          26.2K
+/app/resources/static/app/5.89604fbecf66a9247c0f.chunk.js                          34.1K
+/app/resources/static/app/6.89604fbecf66a9247c0f.chunk.js                          8.8K
+/app/resources/static/app/7.89604fbecf66a9247c0f.chunk.js                          52K
+/app/resources/static/app/8.89604fbecf66a9247c0f.chunk.js                          1022B
+/app/resources/static/app/9.89604fbecf66a9247c0f.chunk.js                          5.3K
+/app/resources/static/app/global.89604fbecf66a9247c0f.bundle.js                    936B
+/app/resources/static/app/main.89604fbecf66a9247c0f.bundle.js                      940.3K
+/app/resources/static/app/main.89604fbecf66a9247c0f.bundle.js.LICENSE              987B
+/app/resources/static/precache-manifest.702269a1e7e28f09430abd7287a31cfa.js        4.8K
+
+These entries have been deleted from joedata/bpf-talks-jib-docker:jib-v1:
+FILE                                                                               SIZE
+/app/resources/static/app/0.1df58802763d55ab4242.chunk.js                          27.7K
+/app/resources/static/app/1.1df58802763d55ab4242.chunk.js                          24.9K
+/app/resources/static/app/10.1df58802763d55ab4242.chunk.js                         803B
+/app/resources/static/app/11.1df58802763d55ab4242.chunk.js                         6.2K
+/app/resources/static/app/12.1df58802763d55ab4242.chunk.js                         4.7K
+/app/resources/static/app/13.1df58802763d55ab4242.chunk.js                         5.1K
+/app/resources/static/app/2.1df58802763d55ab4242.chunk.js                          25K
+/app/resources/static/app/3.1df58802763d55ab4242.chunk.js                          28.2K
+/app/resources/static/app/4.1df58802763d55ab4242.chunk.js                          26.2K
+/app/resources/static/app/5.1df58802763d55ab4242.chunk.js                          34.1K
+/app/resources/static/app/6.1df58802763d55ab4242.chunk.js                          8.8K
+/app/resources/static/app/7.1df58802763d55ab4242.chunk.js                          52K
+/app/resources/static/app/8.1df58802763d55ab4242.chunk.js                          1022B
+/app/resources/static/app/9.1df58802763d55ab4242.chunk.js                          5.3K
+/app/resources/static/app/global.1df58802763d55ab4242.bundle.js                    936B
+/app/resources/static/app/main.1df58802763d55ab4242.bundle.js                      940.3K
+/app/resources/static/app/main.1df58802763d55ab4242.bundle.js.LICENSE              987B
+/app/resources/static/precache-manifest.1421200c222d3bffce057938f0e3396c.js        4.8K
+
+These entries have been changed between joedata/bpf-talks-jib-docker:jib-v1 and joedata/bpf-talks-jib-docker:jib-v2:
+FILE                                                                                 SIZE1         SIZE2
+/app/resources/stats.html                                                            349.6K        349.6K
+/app/resources/static/index.html                                                     6.1K          6.1K
+/app/classes/com/betterprojectsfaster/talks/lightning/jib/SimpleShopApp.class        4.1K          4.2K
+/entrypoint.sh                                                                       1.4K          1.9K
+/app/resources/static/service-worker.js                                              927B          927B
+/app/resources/META-INF/build-info.properties                                        168B          168B
+/app/resources/git.properties                                                        71B           90B
+
+%
+```
+
+So what has changed?
+
+- The Angular web application gets rebuilt with each deployment. It has different file names each time so that web browser caches pick up the new version. Those are the added and deleted files above
+- The HTML and Javascript files that changed also belong to Angular. You also see two files with build information there - `build-info.properties` and `git.properties`
+- `entrypoint.sh` also changed here by accident. Looks like I didn't have the proper version the first time around! 😔
+- Finally, we have `SimpleShopApp.class`, the Java class I did change.
+
+All of the changed files were either in `/app/resources` or `/app/classes`. Hence, the layer for `/app/dependencies` didn't change. So pushing the updated image to a Docker repository means just pushing the last three layers, clocking in around 4.7MB. That's a huge difference to pushing 61.4MB for the "Dockerfile image" above!
 
 ## What Do I Need to Build these Docker Images?
 
