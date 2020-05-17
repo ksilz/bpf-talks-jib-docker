@@ -251,7 +251,13 @@ This project uses the [Gradle wrapper](https://docs.gradle.org/current/userguide
 
 ## How Do I Build the Docker Images?
 
-### With Google Jig
+You can test the differences in Docker images yourself:
+
+- Change either the Java code in [`src/main/java`](https://github.com/ksilz/bpf-talks-jib-docker/tree/master/src/main/java/com/betterprojectsfaster/talks/lightning/jib) or the Angular code in [`src/main/webapp/app`](https://github.com/ksilz/bpf-talks-jib-docker/tree/master/src/main/webapp/app).
+- Build the Docker image, either with Jib or a Dockerfile (see the next two sections).
+- Compare the new Docker image against the old one.
+
+### With Google Jib
 
 This project uses the [Jib Gradle plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin). Here's how you build your Docker image using a local Docker daemon:
 
@@ -259,7 +265,7 @@ This project uses the [Jib Gradle plugin](https://github.com/GoogleContainerTool
 ./gradlew clean bootJar jibDockerBuild -Pprod
 ```
 
-The macOS/Linux shell script `run-build-docker-image-with-jib.sh` in the root directory of this project executes that build and then shows you the contents of the docker image with `docker history` afterwards (see above).
+The macOS/Linux shell script [`run-build-docker-image-with-jib.sh`](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/run-build-docker-image-with-jib.sh) in the root directory of this project executes that build and then shows you the contents of the docker image with `docker history` afterwards (see above).
 
 If you want to build the Docker image **without** a local Docker daemon, then you first need to configure a Docker repository where you Docker image will be pushed to. Please see the [Jib Gradle documentation](https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin) for details. Then can use this command to build the Docker image:
 
@@ -268,6 +274,14 @@ If you want to build the Docker image **without** a local Docker daemon, then yo
 ```
 
 ### With a Dockerfile
+
+Build your Docker image with a Dockerfile requires three steps:
+
+- Creating the application as a JAR file with `./gradlew clean bootJar -Pprod`,
+- Copying the JAR file into the directory where the Dockerfile resides, and
+- Building the Docker image with `docker build -t <YOUR IMAGE NAME AND TAG> .`
+
+The macOS/Linux shell script [`run-build-docker-image-with-dockerfile.sh`](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/run-build-docker-image-with-dockerfile.sh) in the root directory of this project performs these steps and then shows you the contents of the docker image with `docker history` afterwards (see above).
 
 ## How Can I Use Google Jib in My Own Project?
 
