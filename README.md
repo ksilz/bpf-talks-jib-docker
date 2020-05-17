@@ -25,7 +25,7 @@ Then you also need [`container-diff`](https://github.com/GoogleContainerTools/co
 
 ## How Do I Compare the Docker Images?
 
-The Docker images are for the application in this repository. It's a [Spring Boot](https://spring.io/projects/spring-boot) web application with a [PostgreSQL database](https://www.postgresql.org), generated with [JHipster](https://www.jhipster.tech).
+The Docker images are for the application in this repository. It's a [Spring Boot](https://spring.io/projects/spring-boot) web application with a [PostgreSQL database](https://www.postgresql.org), generated with [JHipster](https://www.jhipster.tech). [JHipster](https://www.jhipster.tech) generated it.
 
 - You **don't** need to run the application just to compare the Docker image. But if you do, then please change into the `src/main/docker` directory and run `docker-compose -f app.yml up` there. This will start both the Spring Boot application on port 8080 and a PostgreSQL database. You can log in either as "admin/admin" or "user/user".
 - If you just want to see what the application **looks** like, then please look at [my second JHipster tutorial](https://betterprojectsfaster.com/learn/tutorial-jhipster-docker-02#running-the-application). It shows you all screens, especially the built-in admin pages.
@@ -49,7 +49,7 @@ COPY simple-shop-1.0.0.jar /usr/app/simple-shop.jar
 ENTRYPOINT ["sh", "-c", "chmod +x /usr/app/entrypoint.sh && cd /usr/app && ./entrypoint.sh"]
 ```
 
-Let's look inside the image:
+Let's look inside the image with `docker history`:
 
 ```
 % docker history -H joedata/bpf-talks-jib-docker:dockerfile-v2
@@ -71,16 +71,16 @@ b13ab501b022        18 hours ago        /bin/sh -c #(nop)  ENV JHIPSTER_SLEEP=0 
 %
 ```
 
-As my slides explain, the Docker image consists of layers:
+As [my slides explain](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.pdf), the Docker image consists of layers:
 
-- Each line is a layer
-- The lower layers are at the bottom, the upper layers at the top
-- The bottom layers all the way to the line that starts with `092f9ad82a56` belong to the base Docker image I'm using: `adoptopenjdk/openjdk11-openj9:x86_64-debianslim-jre-11.0.7_10_openj9-0.20.0`
-- The first layer from my Dockerfile is the line that starts with `2d3975c3229c` &mdash; it's the `RUN mkdir -p /usr/app` command. You can see `mkdir -p /usr/app` on the right
-- Every line in my Dockerfile created a layer
-- Each layer prints its size on the right. The biggest layer from my Dockerfile is the JAR file (second layer from top) at 61.4MB &mdash; no surprise here
+- Each line is a layer.
+- The lower layers are at the bottom, the upper layers at the top.
+- The bottom layers all the way to the line that starts with `092f9ad82a56` belong to the base Docker image I'm using: `adoptopenjdk/openjdk11-openj9:x86_64-debianslim-jre-11.0.7_10_openj9-0.20.0`.
+- The first layer from my Dockerfile is the line that starts with `2d3975c3229c` &mdash; it's the result of the `RUN mkdir -p /usr/app` command in the Dockerfile. You can see `mkdir -p /usr/app` on the right.
+- Every line in my Dockerfile created a layer.
+- Each layer prints its size on the right. The biggest layer from my Dockerfile is the JAR file (second layer from top) at 61.4MB &mdash; no surprise here.
 
-As you may be able to tell from the Docker image label `dockerfile-v2`, this image is actually the second version of the application. Compared to the first version of the application, I just [added one log statement to the main class](https://github.com/ksilz/bpf-talks-jib-docker/commit/9c11f5c2d1ca5b1c70fda9b465105f980331bfb6). So how did this one change impact the layers of my Docker image?
+As you may be able to tell from the Docker image label `dockerfile-v2`, this image is actually the second version of the application. Compared to the first version of the application, I just [added one log statement to the main class](https://github.com/ksilz/bpf-talks-jib-docker/commit/9c11f5c2d1ca5b1c70fda9b465105f980331bfb6). So how did this **one** change impact the layers of my Docker image?
 
 That's where `container-diff` kicks in. It shows you which files have changed between two versions of a Docker image:
 
@@ -106,7 +106,7 @@ The file size difference (58.5MB here vs 61.4MB from `docker log`) probably stem
 
 ### Google Jib Images
 
-Now let's look at the Google Jib images. As you may recall from the slides, you don't write a Dockerfile with Jib. Instead, you configure Jib, and in turn it generates the Docker image for you.
+Now let's look at the Google Jib images. As you may recall from [the slides](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.pdf), you don't write a Dockerfile with Jib. Instead, you configure Jib, and in turn it generates the Docker image for you.
 
 Here's the [Jib configuration that my Gradle build uses](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/gradle/docker.gradle):
 
@@ -285,4 +285,51 @@ The macOS/Linux shell script [`run-build-docker-image-with-dockerfile.sh`](https
 
 ## How Can I Use Google Jib in My Own Project?
 
-_Please check back on Monday, May 18, 2020, for this section._
+Google Jib has its own documentation on how to use it with [Maven](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) and [Gradle](https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin). Please check it out.
+
+This project uses the Jib Gradle plugin, as generated by [JHipster](https://www.jhipster.tech). The Gradle integration is as follows:
+
+- The Jib plugin is loaded in [the `plugin` section of `build.gradle`](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/build.gradle#L13). I changed the version number to 2.2.0, the latest version available as of May 15, 2020:
+
+```
+plugins {
+[...]
+    id "com.google.cloud.tools.jib" version "2.2.0"
+[...]
+}
+
+```
+
+- The separated Jib Gradle build file `docker.gradle` [is loaded in `build.gradle`](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/build.gradle#L39):
+
+```
+apply from: "gradle/docker.gradle"
+```
+
+- [`docker.gradle`](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/gradle/docker.gradle) configures Jib:
+
+```
+jib {
+    from {
+        image = "adoptopenjdk/openjdk11-openj9:x86_64-debianslim-jre-11.0.7_10_openj9-0.20.0"
+    }
+    to {
+        image = "joedata/bpf-talks-jib-docker:jib-v2"
+    }
+    container {
+        entrypoint = ["bash", "-c", "/entrypoint.sh"]
+        ports = ["8080"]
+        environment = [
+                SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS",
+                JHIPSTER_SLEEP            : "0"
+        ]
+        creationTime = "USE_CURRENT_TIMESTAMP"
+    }
+    extraDirectories {
+        paths = file("src/main/jib")
+        permissions = ["/entrypoint.sh": "755"]
+    }
+}
+```
+
+- The files in [`src/main/jib`](https://github.com/ksilz/bpf-talks-jib-docker/tree/master/src/main/jib) are automatically part of the Docker image. Here, it's just the [shell script that starts the application](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/src/main/jib/entrypoint.sh).
