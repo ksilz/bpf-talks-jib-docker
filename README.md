@@ -245,11 +245,29 @@ All of the changed files were either in `/app/resources` or `/app/classes`. Henc
 
 ## What Do I Need to Build these Docker Images?
 
-_Please check back on Monday, May 18, 2020, for this section._
+You need a Java 8/11 JDK and [Docker](https://www.docker.com/get-started). If you don't have a proper JDK installed, then you [can get one from AdoptOpenJDK](https://adoptopenjdk.net).
+
+This project uses the [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html), so you don't need to have Gradle installed.
 
 ## How Do I Build the Docker Images?
 
-_Please check back on Monday, May 18, 2020, for this section._
+### With Google Jig
+
+This project uses the [Jib Gradle plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin). Here's how you build your Docker image using a local Docker daemon:
+
+```
+./gradlew clean bootJar jibDockerBuild -Pprod
+```
+
+The macOS/Linux shell script `run-build-docker-image-with-jib.sh` in the root directory of this project executes that build and then shows you the contents of the docker image with `docker history` afterwards (see above).
+
+If you want to build the Docker image **without** a local Docker daemon, then you first need to configure a Docker repository where you Docker image will be pushed to. Please see the [Jib Gradle documentation](https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin) for details. Then can use this command to build the Docker image:
+
+```
+./gradlew clean bootJar jib -Pprod --image=<YOUR IMAGE NAME AND TAG>
+```
+
+### With a Dockerfile
 
 ## How Can I Use Google Jib in My Own Project?
 
