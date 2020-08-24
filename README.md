@@ -25,7 +25,7 @@ Then you also need [`container-diff`](https://github.com/GoogleContainerTools/co
 
 ## How Do I Compare the Docker Images?
 
-The Docker images are for the application in this repository. It's a [Spring Boot](https://spring.io/projects/spring-boot) web application with a [PostgreSQL database](https://www.postgresql.org), generated with [JHipster](https://www.jhipster.tech). [JHipster](https://www.jhipster.tech) generated it.
+The Docker images are for the application in this repository. It's a [Spring Boot](https://spring.io/projects/spring-boot) web application with a [PostgreSQL database](https://www.postgresql.org). [JHipster](https://www.jhipster.tech) generated it.
 
 - You **don't** need to run the application just to compare the Docker image. But if you do, then please change into the `src/main/docker` directory and run `docker-compose -f app.yml up` there. This will start both the Spring Boot application on port 8080 and a PostgreSQL database. You can log in either as "admin/admin" or "user/user".
 - If you just want to see what the application **looks** like, then please look at [my second JHipster tutorial](https://betterprojectsfaster.com/learn/tutorial-jhipster-docker-02#running-the-application). It shows you all screens, especially the built-in admin pages.
