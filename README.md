@@ -4,7 +4,7 @@
 
 [Google Jib](https://github.com/GoogleContainerTools/jib) is a Docker image build tool by Google. It produces **smaller** Docker images for your Java applications: You usually push **90%+ less data** to your Docker repository. So Jib **saves a ton of time & network bandwidth**!
 
-I demonstrated this in a lightning talk to the [London Java Community](https://www.meetup.com/Londonjavacommunity/) (LJC) on May 15, 2020. Please **read the slides first!**
+I demonstrated this in a lightning talk to the [London Java Community](https://www.meetup.com/Londonjavacommunity/) (LJC) on May 15, 2020. Please **read the slides first** or **[watch the talk video on YouTube](https://www.youtube.com/watch?v=H9z2u3NoJsU&t=4963s)**!
 
 - If you're on an Apple device and have Apple's Keynote presentation program installed, then you **[should read the animated Keynote slides](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.key)**.
 - Everybody else should **[should read the PDF slides](https://github.com/ksilz/bpf-talks-jib-docker/blob/master/Google%20JIB%20for%20Java%20Docker%20Images%20-%20LJC%20Lightning%20Talk%202020.pdf)**.
